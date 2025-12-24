@@ -32,6 +32,7 @@ void dfs_gen(int n, int t[(2 * n) + 1][(2 * n) + 1],
 
 void generate_labyrynth(int n, int t[(2 * n) + 1][(2 * n) + 1]) {
     int start_x = rand() % n;
+    int start_y = 0;
     int end_x = rand() % n;
     int size = (2 * n) + 1;
     for (int i = 0; i < size; i++) {
