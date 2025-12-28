@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 TARGET = labyrinth
-SRC = main.c
+SRC = main.c graph.c
 
 all: $(TARGET)
 

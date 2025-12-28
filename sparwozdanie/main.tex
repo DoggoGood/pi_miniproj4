@@ -1,0 +1,105 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\title{Sprawozdanie z miniprojektu 4}
+\author{Mateusz Kamieniecki}
+\date{}
+
+\lstset{
+    language=C,
+    inputencoding=utf8,
+    breakatwhitespace=true, 
+    breaklines=true,       
+    extendedchars=true,
+    literate=%
+    {ą}{{\k{a}}}1
+    {ć}{{\'c}}1
+    {ę}{{\k{e}}}1
+    {ł}{{\l{}}}1
+    {ń}{{\'n}}1
+    {ó}{{\'o}}1
+    {ś}{{\'s}}1
+    {ź}{{\'z}}1
+    {ż}{{\.z}}1
+}
+
+\begin{document}
+\maketitle
+\begin{tabular}{|p{8cm}|p{6cm}|}
+	\hline
+	\textbf{SPRAWOZDANIE}        & \textbf{Data wykonania: 28.12.2025} \\
+	\hline
+	\textbf{Tytuł miniprojektu:} & \textit{Labirynt}                   \\
+	\hline
+	\textbf{Wykonał:}            & \textit{Mateusz Kamieniecki}        \\
+	\hline
+	\textbf{Sprawdził:}          & \textit{dr inż. Konrad Markowski}   \\
+	\hline
+\end{tabular}
+\tableofcontents
+
+\section{Cel Projektu}
+Celem projektu było stworzenie lowosego labiryntu w którym można dostać się do
+każdego wierzchołka, zrobioć z niego graf, znaleźć najkrótszą ścieżkę między
+początkiem i końcem labiryntu oraz znaleźć pozostałe ścieżki.
+
+\section{Rozwiązanie Problemu}
+\subsection{Tworzenie losowego labiryntu}
+Aby stworzyć losowy labirynt jest kilka różnych algorytmów. Ja do tego problemu
+wybrałęm generację za pomocą dfs ale krótko opiszę na czym polegają. Po
+zakończeniu algorytmu dfs losowo są niszczone ściany, aby stworzyć więcej
+ścieżek w labiryncie.
+
+\subsubsection{Algorytm DFS}
+Algorytm DFS (Depth-First Search) polega na tym, że zaczynamy od losowego punktu i idziemy w losowym kierunku aż do momentu, gdy nie możemy iść dalej. Wtedy wracamy się do ostatniego punktu, gdzie mieliśmy jeszcze nieodwiedzone sąsiednie komórki i kontynuujemy. Powtarzamy ten proces aż odwiedzimy wszystkie komórki. Ten algorytm ma tendencję do tworzenia długich, krętych ścieżek.
+
+\subsubsection{Algorytm Kruskala}
+Algorytm Kruskala polega na traktowaniu każdej ściany labiryntu jako krawędzi w
+grafie. Losowo wybieramy krawędzie i usuwamy je, jeśli usunięcie nie spowoduje
+powstania cyklu w grafie. Powtarzamy ten proces, aż wszystkie komórki będą
+połączone.Ten algorytm tworzy labirybty, które mają dużo krótkich ścieżek i
+rozgałęzień.
+
+\subsubsection{Algorytm Wilsona}
+Algorytm Wilsona polega na tworzeniu losowych ścieżek z nieodwiedzonych komórek
+do już odwiedzonych komórek. Gdy ścieżka napotka odwiedzoną komórkę, łączymy ją z
+labiryntem. Powtarzamy ten proces, aż wszystkie komórki będą odwiedzone. Ten algorytm
+tworzy labirynty z równomiernym rozkładem ścieżek.
+
+\subsection{Znajdywanie Najkrótszej Ścieżki}
+Początkowo używałem tego samego algorytmu DFS do znajdywania wszystkich ścieżek oraz
+najkrótszej ścieżki. Jednak DFS nie jest optymalnym wyborem do znajdywania najkrótszej
+ścieżki w grafie o równych wagach krawędzi, ponieważ może prowadzić do eksploracji
+długich ścieżek zanim znajdzie krótszą. Zamiast tego, lepszym wyborem jest algorytm BFS (Breadth-First Search).
+BFS eksploruje wszystkie sąsiednie wierzchołki na danym poziomie przed przejściem do następnego poziomu,
+co gwarantuje znalezienie najkrótszej ścieżki w grafie o równych wagach krawędzi.
+
+\subsection{Znajdywanie Pozostałych Ścieżek}
+Do znajdywania wszystkich ścieżek między dwoma punktami w labiryncie
+użyłem algorytmu DFS (Depth-First Search). DFS jest odpowiedni do tego zadania,
+ponieważ pozwala na eksplorację wszystkich możliwych ścieżek poprzez rekurencyjne
+przechodzenie przez każdy możliwy kierunek z aktualnego wierzchołka, aż do momentu
+dotarcia do punktu docelowego lub wyczerpania wszystkich opcji.
+
+Ponieważ liczba wszystkich możliwych ścieżek może być bardzo duża, postanowiłem wprowadzić limit na maksymalną liczbę ścieżek do znalezienia. W mojej implementacji ustawiłem limit na 1000 ścieżek.
+
+\section{Szczegóły Implementacji}
+\subsection{Reprezentacja Labiryntu w Ascii}
+Ciężko jest przedstawić ściany labiryntu oraz pole w jednym znaku dlatego
+postanowiłem rozszerzyć labirynt, aby oddzielne komórki miały swoje ściany.
+Labirynt o rozmiarze NxN jest reprezentowany jako tablica o rozmiarze
+(2N+1)x(2N+1).
+
+\subsection{}
+
+\end{document}
