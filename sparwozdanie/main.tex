@@ -57,17 +57,21 @@ początkiem i końcem labiryntu oraz znaleźć pozostałe ścieżki.
 \subsection{Tworzenie losowego labiryntu}
 Aby stworzyć losowy labirynt jest kilka różnych algorytmów. Ja do tego problemu
 wybrałęm generację za pomocą dfs ale krótko opiszę na czym polegają. Po
-zakończeniu algorytmu dfs losowo są niszczone ściany, aby stworzyć więcej
+zakończeniu algorytmu DFS (Depth-First Search) losowo są niszczone ściany, aby stworzyć więcej
 ścieżek w labiryncie.
 
 \subsubsection{Algorytm DFS}
-Algorytm DFS (Depth-First Search) polega na tym, że zaczynamy od losowego punktu i idziemy w losowym kierunku aż do momentu, gdy nie możemy iść dalej. Wtedy wracamy się do ostatniego punktu, gdzie mieliśmy jeszcze nieodwiedzone sąsiednie komórki i kontynuujemy. Powtarzamy ten proces aż odwiedzimy wszystkie komórki. Ten algorytm ma tendencję do tworzenia długich, krętych ścieżek.
+Algorytm DFS polega na tym, że zaczynamy od losowego punktu i idziemy w losowym
+kierunku aż do momentu, gdy nie możemy iść dalej. Wtedy wracamy się do
+ostatniego punktu, gdzie mieliśmy jeszcze nieodwiedzone sąsiednie komórki i
+kontynuujemy. Powtarzamy ten proces aż odwiedzimy wszystkie komórki. Ten
+algorytm ma tendencję do tworzenia długich, krętych ścieżek.
 
 \subsubsection{Algorytm Kruskala}
 Algorytm Kruskala polega na traktowaniu każdej ściany labiryntu jako krawędzi w
 grafie. Losowo wybieramy krawędzie i usuwamy je, jeśli usunięcie nie spowoduje
 powstania cyklu w grafie. Powtarzamy ten proces, aż wszystkie komórki będą
-połączone.Ten algorytm tworzy labirybty, które mają dużo krótkich ścieżek i
+połączone. Ten algorytm tworzy labirynty, które mają dużo krótkich ścieżek i
 rozgałęzień.
 
 \subsubsection{Algorytm Wilsona}
@@ -91,7 +95,9 @@ ponieważ pozwala na eksplorację wszystkich możliwych ścieżek poprzez rekure
 przechodzenie przez każdy możliwy kierunek z aktualnego wierzchołka, aż do momentu
 dotarcia do punktu docelowego lub wyczerpania wszystkich opcji.
 
-Ponieważ liczba wszystkich możliwych ścieżek może być bardzo duża, postanowiłem wprowadzić limit na maksymalną liczbę ścieżek do znalezienia. W mojej implementacji ustawiłem limit na 1000 ścieżek.
+Ponieważ liczba wszystkich możliwych ścieżek może być bardzo duża, postanowiłem
+wprowadzić limit na maksymalną liczbę ścieżek do znalezienia. W mojej
+implementacji ustawiłem limit na 500 ścieżek.
 
 \section{Szczegóły Implementacji}
 \subsection{Reprezentacja Labiryntu w Ascii}
@@ -100,6 +106,96 @@ postanowiłem rozszerzyć labirynt, aby oddzielne komórki miały swoje ściany.
 Labirynt o rozmiarze NxN jest reprezentowany jako tablica o rozmiarze
 (2N+1)x(2N+1).
 
-\subsection{}
+Ściany są reprezentowane przez znaki kwadratowe, pola są reprezentowane jako liczby, a ścieżki pomiędzy jako kreski.
+
+\begin{lstlisting}[caption={Funkcja drukująca labirynt}]
+
+void print_labyrynth(int n, int t[(2 * n) + 1][(2 * n) + 1]) {
+    for (int i = 0; i < (2 * n) + 1; i++) {
+        for (int j = 0; j < (2 * n) + 1; j++) {
+            if (t[i][j] == 1) {
+                // Sciana
+                printf("");
+            } else if (i % 2 == 1 && j % 2 == 1) {
+                // Węzeł (pokój)
+                int node_i = (i - 1) / 2;
+                int node_j = (j - 1) / 2;
+                int node_id = node_i * n + node_j;
+                if (node_id >= 100) {
+                    printf(""); // Dla dużych liczb używamy ".."
+                } else {
+                    printf("%2d", node_id);
+                }
+            } else if (i % 2 == 1 && j % 2 == 0) {
+                // Poziomy korytarz
+                printf("");
+            } else if (i % 2 == 0 && j % 2 == 1) {
+                // Pionowy korytarz
+                printf("");
+            } else {
+                // Narożnik
+                printf("");
+            }
+        }
+        printf("\n");
+    }
+}
+\end{lstlisting}
+(te znaki ASCII zostały usunięte, ponieważ nie są poprawnie wyświetlane w tym
+formacie w LaTeX)
+
+
+\subsection{Wybieranie kierunku}
+Kierunek wybierany jest losowo z tablicy kierunków. Poniżej znajduje się
+fragment kodu definiujący przykładową tablicę kierunków:
+\begin{lstlisting}[caption={Tablica kierunków}]
+int directions[4][2] = {{0, 2}, {2, 0}, {0, -2}, {-2, 0}};
+\end{lstlisting}
+w ten sposób można łatwo iterować po tablicy i wybierać losowy kierunek.
+
+\subsection{Reprezentacja grafu}
+Postanowiłem użyć listy sąsiedztwa, którą napisałem w poprzednim projekcie.
+Lista sąsiedzctwa jest według mnie najwygodniejszą reprezentacją grafu do tego
+typu zadań.
+
+\subsection{Kolejka w BFS}
+Do implementacji kolejki w algorytmie BFS potrzebna jest kolejka, aby
+przechowywać wierzchołki do odwiedzenia. W mojej implementacji użyłem prostej
+kolejki, w której trzymam początek i koniec kolejki oraz tablicę do
+przechowywania elementów.
+
+\begin{lstlisting}[caption={Inicjalizacja kolejki}]
+int *queue = malloc(n * n * sizeof(int));
+int front = 0, rear = 0;
+\end{lstlisting}
+
+\section{Sposób wykorzystania programu}
+Program jest kompilowany za pomocą GNU make. Aby skompilować program, należy
+wykonać polecenie \texttt{make} w katalogu głównym projektu. Spowoduje to
+utworzenie pliku wykonywalnego o nazwie \texttt{main}.
+
+Aby wyczyścić pliki obiektowe i plik wykonywalny, należy wykonać polecenie
+\texttt{make clean}.
+
+W przypadku braku zainstalowanego GNU make, program można skompilować
+ręcznie za pomocą następującego polecenia:
+\begin{lstlisting}[caption={Ręczna kompilacja programu}]
+gcc -Wall -Wextra -std=c11 -o labyrinth 343333.c graph.c
+\end{lstlisting}
+
+Program można uruchomić wykonując polecenie:
+\texttt{./labyrinth}
+program poprosi o podanie rozmiaru labiryntu. Potem wypisze labirynt,
+połączenia w grafie, najkrótszą ścieżkę oraz pozostałe ścieżki.
+
+\section{Wnioski}
+Podczas realizacji projektu nauczyłem się jak tworzyć losowe labirynty
+oraz jak reprezentować je jako grafy. Dodatkowo poznałem jak implementować algorytmy
+DFS oraz BFS w C.
+
+\section{Dodatek}
+Gdyby MS Teams znowu robiło problemy z załącznikami, kod źródłowy projektu
+jest dostępny na GitHub pod adresem:
+\url{https://github.com/DoggoGood/pi_miniproj4}
 
 \end{document}
